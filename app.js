@@ -7,7 +7,7 @@ app.use(bodyParser.json());
 app.use(express.urlencoded({extended: false}));
 app.use(express.json());
 
-app.set("port", process.env.PORT || 33333);
+app.set("port", 80);
 
 app.get("/", (req, res) => {
     res.sendFile('./html/main.html', {root: "./"});
