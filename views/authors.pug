@@ -1,0 +1,8 @@
+html
+  head
+    title= 'Издательства'
+  body
+    h1= 'Авторы'
+    ul
+        each val in values
+            li= val.name + ' ' + val.surname + ' (' + val.birth_year + '-' + val.death_year + ')'

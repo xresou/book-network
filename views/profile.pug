@@ -1,0 +1,11 @@
+html
+  head
+    title= 'Профиль'
+  body
+    h1= 'Профиль'
+    ul
+        each val in values
+            li= 'Имя пользователя: ' + val.username
+            li= 'Фамилия: ' + val.surname
+            li= 'Имя: ' + val.name
+            li= 'Эл. почта: ' + val.email

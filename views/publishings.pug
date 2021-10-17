@@ -1,0 +1,8 @@
+html
+  head
+    title= 'Издательства'
+  body
+    h1= 'Издательства'
+    ul
+        each val in values
+            li= val.name + ' | ' + val.founded + ' | ' + val.location 

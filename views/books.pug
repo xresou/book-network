@@ -1,0 +1,8 @@
+html
+  head
+    title= 'Книги'
+  body
+    h1= 'Книги'
+    ul
+        each val in values
+            li= val.book_name + ' | ' + val.author_name + ' ' + val.author_surname + ' | ' + val.rating

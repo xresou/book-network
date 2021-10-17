@@ -1,16 +1,31 @@
 <!DOCTYPE html>
 <html lang='ru'>
     <head>
-        <title>Books</title>
+        <title>Библиотека</title>
     </head>
+    <style>
+        html {
+            font: 1em sans-serif;
+        } 
+        a {
+            text-decoration: none;
+            color: #0000EE;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
     <body>
-        <h1>Книги</h1>
+        <h1>Книжная библиотека</h1>
+        <div>
+            <a href='/login'>Авторизация</a>
+            <a href='/registration'>Регистрация</a>
+        </div>
         <ul>
-            <li>Авторы</li>
-            <li>Книги</li>
-            <li>Издательства</li>
-            <li>Профиль</li>
+            <li><a href='/authors'>Авторы</a></li>
+            <li><a href='/books'>Книги</a></li>
+            <li><a href='/publishings'>Издательства</a></li>
+            <li><a href='profile'>Профиль</a></li>
         </ul>
-
     </body>
 </html>
