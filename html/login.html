@@ -7,7 +7,7 @@
         window.onload = function() {
             document.getElementById("form")
                     .setAttribute("action", window.location.hostname + 
-                                  ":" + window.location.port + "/login");
+                                  (window.location.port == null ? "" : ":" +  window.location.port) + "/login");
         };
     </script>
     <style>
