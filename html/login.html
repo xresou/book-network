@@ -6,8 +6,9 @@
     <script type = "text/javascript">
         window.onload = function() {
             document.getElementById("form")
-                    .setAttribute("action", window.location.hostname + 
-                                  (window.location.port == null ? "" : ":" +  window.location.port) + "/login");
+                    .setAttribute("action", window.location.protocol + "//" + window.location.hostname + 
+                                  (window.location.port == "" ? "" : ":" +  window.location.port) + "/login");
+            
         };
     </script>
     <style>
