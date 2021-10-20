@@ -1,8 +1,11 @@
 html
   head
-    title= 'Издательства'
+    link(rel="stylesheet" type="text/css" href="/css/style.css")
+    title= 'Авторы'
   body
     h1= 'Авторы'
     ul
-        each val in values
-            li= val.name + ' ' + val.surname + ' (' + val.birth_year + '-' + val.death_year + ')'
+      each val in values
+        li
+          h3
+            a(href="/authors/" + val.id)= val.name + ' ' + val.surname + " (" + val.birth_year + "-" + val.death_year + ")"

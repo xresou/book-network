@@ -1,0 +1,20 @@
+html
+  head
+    link(rel="stylesheet" type="text/css" href="/css/style.css")
+    title= author.name + " " + author.surname
+  body
+    h2= author.name + " " + author.surname
+    h3= "Годы жизни: " + author.birth_year + "—" + author.death_year
+    if books.length != 0
+      h3="Книги"
+      ol
+        each val in books
+            li
+                h4
+                  a(href="/books/" + val.id)= val.name
+                if val.rating == null
+                  p= "Рейтинг: отсутствует (нет оценок)" 
+                else
+                  p= "Рейтинг: " + val.rating + " (" + val.rating_number +" оценки)"
+    else 
+        h3= "Книги не найдены"

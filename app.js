@@ -7,6 +7,8 @@ const db = require("./db/db");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(express.static(__dirname + '/public'));
+
 app.set('view engine', 'pug');
 
 app.get("/", (req, res) => {
@@ -56,7 +58,7 @@ app.get("/profile", (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log("Server running at http://localhost:${PORT}");
+  console.log(`Server running at http://localhost:${PORT}`);
 });
 
 app.get("/registration", (req, res) => {
@@ -70,5 +72,27 @@ app.post("/registration", (req, res) => {
      } else {
        res.send("Error. Try again");
      }
+  });
+});
+
+app.get("/books/:id", (req, res) => {
+  console.log(req.params.id);
+  db.getBookByID(req.params.id, (result) => {
+    console.log(result);
+    res.render("book", {
+      book: result[0][0],
+      rating: result[1]
+    });
+  });
+});
+
+app.get("/authors/:id", (req, res) => {
+  console.log(req.params.id)
+  db.getAuthorByID(req.params.id, (result) => {
+    console.log(result[1] != []);
+    res.render("author", {
+      author: result[0],
+      books: result[1]
+    });
   });
 });

@@ -1,8 +1,18 @@
-html
+html(lang='ru')
   head
-    title= 'Книги'
+    link(rel="stylesheet" type="text/css" href="/css/books.css")
+    title= "Книги"
   body
-    h1= 'Книги'
-    ul
-        each val in values
-            li= val.book_name + ' | ' + val.author_name + ' ' + val.author_surname + ' | ' + val.rating
+    h2= "Книги"
+    ol
+      each val in values
+        li
+            p(class = "book_name") 
+              a(href="/books/" + val.book_id)= val.book_name 
+            p 
+              a(href="/authors/" + val.author_id)= val.author_name + ' ' + val.author_surname
+            if val.rating == null 
+              p= "Рейтинг: отсутствует"
+            else  
+              p= "Рейтинг: " + val.rating 
+              p= "Отзывы: " + val.rating_number

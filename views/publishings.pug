@@ -1,8 +1,12 @@
 html
   head
+    link(rel="stylesheet" type="text/css" href="/css/style.css")
     title= 'Издательства'
   body
-    h1= 'Издательства'
+    h2= 'Издательства'
     ul
         each val in values
-            li= val.name + ' | ' + val.founded + ' | ' + val.location 
+            li
+              h4= val.name
+              p= "Год основания: " + val.founded 
+              p= "Город: " + val.location 

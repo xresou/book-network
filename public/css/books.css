@@ -1,0 +1,18 @@
+body {
+    font-family:  sans-serif;
+}
+
+
+a {
+    /* color: #666666; */
+    color: #000000;
+    text-decoration: none;  
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+.book_name {
+    font-weight: 700;
+}

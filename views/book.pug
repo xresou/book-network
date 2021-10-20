@@ -1,0 +1,25 @@
+html
+  head
+    link(rel="stylesheet" type="text/css" href="/css/style.css")
+    title= book.book_name
+  body
+    h2= book.book_name
+    h3 
+      a(href="/authors/" + book.author_id)= book.author_name + " " + book.author_surname 
+    if book.rating == null
+      h3= "Рейтинг: отсутсвует"
+    else 
+      h3= "Рейтинг: " + book.rating
+    if book.rating_number == null
+      h3= "Отзывы (0)"
+    else
+      h3= "Отзывы (" + book.rating_number + "):"
+    ul
+        each val in rating
+            li
+                a(href="/users/" + val.id)= val.name + " " + val.surname + " (@" + val.username + ")"
+                p= "Оценка: " + val.rating
+                if val.review != null  
+                    p= "Отзыв: " + val.review
+                else 
+                    p= "Отзыв: отсутствует"

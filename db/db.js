@@ -11,8 +11,9 @@ client.connect();
 
 module.exports.getAuthors = function (callback) {
     client.query("\
-        SELECT surname, name, birth_year, death_year \
-        FROM authors", (err, res) => {
+        SELECT id, surname, name, birth_year, death_year \
+        FROM authors \
+        ORDER BY id", (err, res) => {
         callback(res.rows);
     });
 }
@@ -28,7 +29,8 @@ module.exports.getUser = function (email, callback) {
 
 module.exports.getBooks = function (callback) {
     client.query("\
-        SELECT b.name as book_name, b.rating, a.surname as author_surname, a.name as author_name \
+        SELECT b.id as book_id, b.name as book_name, b.rating, b.rating_number, a.id as author_id, \
+               a.surname as author_surname, a.name as author_name \
         FROM authors a \
         JOIN books_authors ba ON a.id = ba.author_id \
         JOIN books b ON ba.book_id = b.id \
@@ -61,5 +63,72 @@ module.exports.addUser = function (user, callback) {
         user.surname, user.name, 
         user.email], (err, res) => {
         callback(err);
+    });
+}
+
+module.exports.getBookByID = function (id, callback) {
+    let book_info = [];
+    client.query("\
+    SELECT b.name as book_name, b.rating, b.rating_number, ba.author_id, a.surname as author_surname, \
+           a.name as author_name FROM books b  \
+    JOIN books_authors ba ON book_id = b.id \
+    JOIN authors a ON a.id = ba.author_id \
+    WHERE b.id = $1 \
+    ", [id], (err, res) => {
+        //console.log(res);
+        if (err == null) {
+            //console.log(res.rows);
+            book_info[0] = res.rows;
+        } else {
+            console.log(error);
+            callback();
+        }
+        console.log(book_info);
+    });
+    client.query("\
+    SELECT u.id, u.username, u.name, u.surname, br.rating, br.review \
+    FROM books_ratings br\
+    JOIN users u ON br.user_id = u.id \
+    WHERE book_id = $1; \
+    ", [id], (err, res) => {
+        if (err == null) {
+            book_info[1] = res.rows;
+            callback(book_info);
+        } else {
+            console.log(err);
+            callback();
+        }
+    });
+}
+
+module.exports.getAuthorByID = function (id, callback) {
+    let author_info = []
+    client.query("\
+    SELECT surname, name, birth_year, death_year \
+    FROM authors a \
+    WHERE a.id = $1 \
+    ", [id], (err, res) => {
+        if (err == null) {
+            //console.log(res.rows);
+            author_info = res.rows;
+        } else {
+            console.log(error);
+            callback();
+        }
+    });
+    client.query("\
+    SELECT b.id, b.name, b.rating, b.rating_number from books b \
+    JOIN books_authors ba ON ba.book_id = b.id \
+    JOIN authors a ON a.id = ba.author_id \
+    WHERE a.id = $1 \
+    ",[id], (err, res) => {
+        if (err == null) {
+            author_info[1] = res.rows;
+            //console.log(author_info);
+            callback(author_info);
+        } else {
+            console.log(error);
+            callback();
+        }
     });
 }
