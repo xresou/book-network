@@ -1,12 +1,15 @@
 html
   head
     link(rel="stylesheet" type="text/css" href="/css/style.css")
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     title= author.name + " " + author.surname
   body
     h2= author.name + " " + author.surname
     h3= "Годы жизни: " + author.birth_year + "—" + author.death_year
     if books.length != 0
-      h3="Книги"
+      h3= "Книги"
       ol
         each val in books
             li

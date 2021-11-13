@@ -1,6 +1,10 @@
 html
   head
-    link(rel="stylesheet" type="text/css" href="/css/style.css")
+    link(rel="stylesheet" type="text/css" href="/css/book.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet")
+    script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
     title= book.book_name
   body
     h2= book.book_name
@@ -14,12 +18,16 @@ html
       h3= "Отзывы (0)"
     else
       h3= "Отзывы (" + book.rating_number + "):"
-    ul
+      div.content
         each val in rating
-            li
-                a(href="/users/" + val.id)= val.name + " " + val.surname + " (@" + val.username + ")"
-                p= "Оценка: " + val.rating
-                if val.review != null  
-                    p= "Отзыв: " + val.review
-                else 
-                    p= "Отзыв: отсутствует"
+              div.rating
+                  a(href="/users/" + val.id)= val.name + " " + val.surname + " (@" + val.username + ")"
+                  p= "Оценка: " + val.rating
+                  if val.review != null  
+                      p= "Отзыв: " + val.review
+                  else 
+                      p= "Отзыв: отсутствует"
+                  if val.current_user     
+                    form(class="field" action="/rating_del/" + val.rating_id method="POST" id="form")
+                      a(href="/ratings/" + val.rating_id)= "Изменить"
+                      input(class="button" type="submit" value="Удалить")

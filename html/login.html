@@ -2,35 +2,36 @@
 <html lang='ru'>
     <head>
         <title>Авторизация</title>
+        <script type="text/javascript">
+            window.onload = function () {
+                document.getElementById("form")
+                    .setAttribute("action", window.location.protocol + "//" + window.location.hostname +
+                        (window.location.port == "" ? "" : ":" + window.location.port) + "/login");
+            };
+        </script>
+        <style>
+            html {
+                font: 1em sans-serif;
+            }
+
+            input {
+                display: block;
+                margin: 20px 0px;
+            }
+
+            div {
+                border: 10px #0000;
+            }
+        </style>
     </head>
-    <script type = "text/javascript">
-        window.onload = function() {
-            document.getElementById("form")
-                    .setAttribute("action", window.location.protocol + "//" + window.location.hostname + 
-                                  (window.location.port == "" ? "" : ":" +  window.location.port) + "/login");
-            
-        };
-    </script>
-    <style>
-        html {
-            font: 1em sans-serif;
-        }
-        input {
-            display: block;
-            margin: 20px 0px;
-        }
-        div {
-            border: 10px #0000;
-        }
-    </style>
     <body>
-            <div>
+        <div>
             <h1>Авторизация</h1>
-            <form action="" method="POST" id="form">
+            <form action="http://localhost:5000/books" method="POST" id="form">
                 <input type="text" name="login" placeholder="Логин">
                 <input type="text" name="password" placeholder="Пароль">
                 <input type="submit" value="Авторизоваться">
             </form>
-            </div>
+        </div>
     </body>
 </html>

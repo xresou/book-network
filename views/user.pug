@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+html(lang='ru')
+  head
+    link(rel="stylesheet" type="text/css" href="/css/user.css")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet")
+    title= "Книги"
+  body
+    div.card
+        h1= user.name + " " + user.surname
+        h2= "@" + user.username
+        h3= "Создано полок: " + user.shelves_number
+        h3= "Добавлено отзывов: " + user.ratings_number

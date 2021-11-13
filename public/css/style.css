@@ -1,5 +1,5 @@
 html {
-    font-family: sans-serif;
+    /* font-family: sans-serif; */
 }
 
 a {
@@ -9,4 +9,21 @@ a {
 
 a:hover {
     text-decoration: underline;
+}
+
+h1, h2, h3, p, a {
+    font-family: Open Sans;
+}
+
+h1 {
+    font-weight: 500;
+}
+
+h3 {
+    font-weight: 400;
+}
+
+ul {
+    text-align: center;
+    list-style-type: none;
 }

@@ -1,5 +1,7 @@
+const { v4: uuidv4 } = require("uuid");
 const express = require("express");
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
 const PORT = process.env.PORT || 5000;
 const app = express();
 const db = require("./db/db");
@@ -7,12 +9,13 @@ const db = require("./db/db");
 app.use(bodyParser.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cookieParser());
 app.use(express.static(__dirname + '/public'));
 
-app.set('view engine', 'pug');
+app.set("view engine", "pug");
 
 app.get("/", (req, res) => {
-  res.sendFile("./html/main.html", { root: "./" });
+  res.sendFile("./html/new_main.html", { root: "./" });
 });
 
 app.get("/login", (req, res) => {
@@ -23,7 +26,16 @@ app.post("/login", (req, res) => {
   db.getUser(req.body.login, (user) => {
     if (user.length > 0) {
       if (user[0].password == req.body.password) {
-        res.send("OK");
+        let cookie = uuidv4();
+        db.addCookie(cookie, user[0].id, (err) => {
+          console.log(err);
+          if (err) {
+            res.send("Error!");
+          } else {
+            res.cookie("Auth", cookie);
+            res.redirect(301, "/books");
+          }
+        });
       } else {
         res.send("Password is not correct");
       }
@@ -41,7 +53,7 @@ app.get("/authors", (req, res) => {
 
 app.get("/books", (req, res) => {
   db.getBooks((result) => {
-    res.render("books", { values: result });
+    res.render("books_new", { values: result });
   });
 });
 
@@ -52,13 +64,17 @@ app.get("/publishings", (req, res) => {
 });
 
 app.get("/profile", (req, res) => {
-  db.getProfile((result) => {
-    res.render("profile", { values: result });
+  console.log(req.cookies);
+  db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
+    if (err) {
+      console.log(err);
+      res.send("Error: " + err.message);
+    } else {
+      db.getProfile(user_id, (result) => {
+        res.render("profile", { values: result });
+      });
+    }
   });
-});
-
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
 });
 
 app.get("/registration", (req, res) => {
@@ -76,23 +92,47 @@ app.post("/registration", (req, res) => {
 });
 
 app.get("/books/:id", (req, res) => {
-  console.log(req.params.id);
   db.getBookByID(req.params.id, (result) => {
-    console.log(result);
     res.render("book", {
-      book: result[0][0],
+      book: result[0],
       rating: result[1]
     });
   });
 });
 
 app.get("/authors/:id", (req, res) => {
-  console.log(req.params.id)
   db.getAuthorByID(req.params.id, (result) => {
-    console.log(result[1] != []);
     res.render("author", {
       author: result[0],
       books: result[1]
     });
   });
+});
+
+app.get("/users/:id", (req, res) => {
+  db.getUserByID(req.params.id, (result) => {
+    res.render("user", {user: result[0]});
+  });
+});
+
+app.post("/books", (req, res) => {
+  db.getBookByName(req.body.search, (result) => {
+    res.render("books_new", { values: result });
+  });
+});
+
+app.post("/authors", (req, res) => {
+  db.getAuthorByName(req.body.search, (result) => {
+    res.render("authors", { values: result });
+  });
+});
+
+app.post("/rating_del/:id", (req, res) => {
+  db.deleteRating(req.params.id, (result) => {
+    res.send(result ? "Отзыв удален" : "Отзыв не был удален");
+  });
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running at http://localhost:${PORT}`);
 });

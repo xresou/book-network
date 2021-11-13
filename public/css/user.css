@@ -1,0 +1,8 @@
+.card {
+    border: black solid 2px;
+    font-family: Open Sans;
+    margin: 15% auto;
+    text-align: center;
+    vertical-align: center;
+    width: 30%;
+}

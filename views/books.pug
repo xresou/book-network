@@ -1,13 +1,17 @@
+<!DOCTYPE html>
 html(lang='ru')
   head
     link(rel="stylesheet" type="text/css" href="/css/books.css")
     title= "Книги"
   body
     h2= "Книги"
+    form(class="field" action="" method="POST" id="form")
+      input(class="input" type="text" name="search" placeholder="Поиск книг")
+      input(class="button" type="submit" value="Поиск")
     ol
       each val in values
         li
-            p(class = "book_name") 
+            p(class = "book_name")
               a(href="/books/" + val.book_id)= val.book_name 
             p 
               a(href="/authors/" + val.author_id)= val.author_name + ' ' + val.author_surname

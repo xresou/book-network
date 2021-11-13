@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 html(lang="ru")
     head
-        script(src="/post/authors.js")
         link(href="/css/style_books.css" rel="stylesheet")
         link(rel="preconnect" href="https://fonts.googleapis.com")
         link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
         link(href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet")
         script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
-        title= "Авторы"
+        title= "Книги"
     body
         nav
             h1= "Книжная библиотека"
@@ -23,23 +22,22 @@ html(lang="ru")
                 li 
                     a(href="/profile")= "Профиль"
         hr
-        h1.heading= "Авторы"
-    div.search
+        h1.heading= "Книги"
+        div.search
             form(action="" method="POST" id="form")
-                input(type="text" name="search" placeholder="Поиск авторов")
+                input(type="text" name="search" placeholder="Поиск книг")
                 input(type="submit" value="Поиск")
-    div.content
-        each val in values
-            div.book
-                div.book-header
-                    h2
-                        a(href="/authors/" + val.id)= val.name + " " + val.surname
-                    p
-                      i.fas.fa-book
-                      | 
-                      | 
-                      if val.book_number
-                        | #{val.book_number}
-                      else
-                        | N/A
-                h3= val.birth_year + " — " + val.death_year
+        div.content
+            each val in values
+                div.book
+                    div.book-header
+                        h2
+                            a(href="/books/" + val.book_id)= val.book_name
+                        p 
+                            != "<i class=\"far fa-star\"></i>"
+                            if val.rating != null
+                                = " " + val.rating
+                            else 
+                                = " N/A"
+                    h3
+                        a(href="/authors/" + val.author_id)= val.author_name + " " + val.author_surname
