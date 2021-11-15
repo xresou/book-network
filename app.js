@@ -15,7 +15,7 @@ app.use(express.static(__dirname + '/public'));
 app.set("view engine", "pug");
 
 app.get("/", (req, res) => {
-  res.sendFile("./html/new_main.html", { root: "./" });
+  res.sendFile("./html/main.html", { root: "./" });
 });
 
 app.get("/login", (req, res) => {
@@ -47,31 +47,38 @@ app.post("/login", (req, res) => {
 
 app.get("/authors", (req, res) => {
   db.getAuthors((result) => {
-    res.render("authors", { values: result });
+    res.render("authors", { 
+      authors: result 
+    });
   });
 });
 
 app.get("/books", (req, res) => {
   db.getBooks((result) => {
-    res.render("books_new", { values: result });
+    res.render("books", {
+       values: result 
+    });
   });
 });
 
 app.get("/publishings", (req, res) => {
   db.getPublishings((result) => {
-    res.render("publishings", { values: result });
+    res.render("publishings", { 
+      values: result 
+    });
   });
 });
 
 app.get("/profile", (req, res) => {
-  console.log(req.cookies);
   db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
     if (err) {
       console.log(err);
       res.send("Error: " + err.message);
     } else {
       db.getProfile(user_id, (result) => {
-        res.render("profile", { values: result });
+        res.render("profile", { 
+          values: result 
+        });
       });
     }
   });
@@ -92,10 +99,10 @@ app.post("/registration", (req, res) => {
 });
 
 app.get("/books/:id", (req, res) => {
-  db.getBookByID(req.params.id, (result) => {
+  db.getBookByID(req.params.id, (book) => {
     res.render("book", {
-      book: result[0],
-      rating: result[1]
+      book: book.info,
+      rating: book.ratings
     });
   });
 });
@@ -109,6 +116,22 @@ app.get("/authors/:id", (req, res) => {
   });
 });
 
+app.get("/shelves/", (req, res) => {
+  db.getUserIdByCookie(req.cookies.Auth, (error, userId) => {
+    console.log(userId);
+    if (userId) {
+      db.getShelves(userId, (result) => {
+        console.log(result);
+        res.render("shelves", {
+          shelves: result
+        });
+      });
+    } else {
+      res.send("Error!");
+    }
+  });
+});
+
 app.get("/users/:id", (req, res) => {
   db.getUserByID(req.params.id, (result) => {
     res.render("user", {user: result[0]});
@@ -117,19 +140,28 @@ app.get("/users/:id", (req, res) => {
 
 app.post("/books", (req, res) => {
   db.getBookByName(req.body.search, (result) => {
-    res.render("books_new", { values: result });
+    res.render("books", { values: result });
   });
 });
 
 app.post("/authors", (req, res) => {
   db.getAuthorByName(req.body.search, (result) => {
-    res.render("authors", { values: result });
+    res.render("authors", { 
+      authors: result 
+    });
   });
 });
 
 app.post("/rating_del/:id", (req, res) => {
-  db.deleteRating(req.params.id, (result) => {
-    res.send(result ? "Отзыв удален" : "Отзыв не был удален");
+  db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
+    db.deleteRating(req.params.id, user_id, (result) => {
+      res.send(result ? "Отзыв удален" : "Отзыв не был удален");
+      if (result) {
+        res.render();
+      } else {
+        res.render();
+      }
+    });
   });
 });
 

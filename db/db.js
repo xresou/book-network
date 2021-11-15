@@ -18,7 +18,7 @@ module.exports.getUserIdByCookie = function(cookie, callback) {
             callback(err);
         } else {
             if (res.rows.length > 0) {
-              callback(null, res.rows[0].user_id);
+                callback(null, res.rows[0].user_id);
             } else {
               callback(new Error("Cookie is not found!"));
             }
@@ -75,13 +75,11 @@ module.exports.addCookie = function (cookie, user_id, callback) {
     });
 }
 
-
-
 module.exports.getBooks = function (callback) {
     client.query("\
-        SELECT b.id as book_id, b.name as book_name, \
-               b.rating, b.rating_number, a.id as author_id, \
-               a.surname as author_surname, a.name as author_name \
+        SELECT b.id AS book_id, b.name AS book_name, \
+               b.rating, b.rating_number, a.id AS author_id, \
+               a.surname AS author_surname, a.name AS author_name \
           FROM authors a \
           JOIN books_authors ba ON a.id = ba.author_id \
           JOIN books b ON ba.book_id = b.id \
@@ -119,7 +117,7 @@ module.exports.addUser = function (user, callback) {
 }
 
 module.exports.getBookByID = function (id, callback) {
-    let book_info = [];
+    let book = {};
     client.query("\
     SELECT b.name as book_name, b.rating, b.rating_number, \
            ba.author_id, a.surname as author_surname, \
@@ -129,27 +127,31 @@ module.exports.getBookByID = function (id, callback) {
      WHERE b.id = $1 \
     ", [id], (err, res) => {
         if (err == null) {
-            book_info = res.rows;
+            book.info = res.rows[0];
+            client.query("\
+            SELECT u.id, u.username, u.name, u.surname, \
+                  br.id AS rating_id, \
+                  br.rating, br.review, (u.id = 1) AS current_user  \
+              FROM books_ratings br \
+              JOIN users u ON br.user_id = u.id \
+             WHERE book_id = $1 \
+             ORDER BY CASE WHEN u.id = 1 THEN 1 ELSE 2 END, u.id\
+            ", [id], (error, result) => {
+                if (error == null) {
+                    book.ratings = result.rows;
+                    console.log(JSON.stringify(book, null, 4));
+                    callback(book);
+                } else {
+                    console.log(err);
+                    callback();
+                }
+            });
         } else {
             console.log(error);
             callback();
         }
     });
-    client.query("\
-    SELECT u.id, u.username, u.name, u.surname, br.id AS rating_id, br.rating, br.review, (u.id = 1) AS current_user  \
-      FROM books_ratings br \
-      JOIN users u ON br.user_id = u.id \
-     WHERE book_id = $1 \
-     ORDER BY CASE WHEN u.id = 1 THEN 1 ELSE 2 END, u.id\
-    ", [id], (err, res) => {
-        if (err == null) {
-            book_info[1] = res.rows;
-            callback(book_info);
-        } else {
-            console.log(err);
-            callback();
-        }
-    });
+    
 }
 
 module.exports.getAuthorByID = function (id, callback) {
@@ -211,6 +213,10 @@ module.exports.getBookByName = function (name, callback) {
      WHERE LOWER(b.name)    LIKE LOWER('%' || $1 || '%') \
         OR LOWER(a.name)    LIKE LOWER('%' || $1 || '%') \
         OR LOWER(a.surname) LIKE LOWER('%' || $1 || '%') \
+        OR LOWER(CONCAT(a.name, ' ', a.surname))         \
+            LIKE LOWER('%' || $1 || '%')                 \
+        OR LOWER(CONCAT(a.surname, ' ', a.name))         \
+            LIKE LOWER('%' || $1 || '%')                 \
      ", [name], (err, res) => {
         if (err == null) {
             callback(res.rows);
@@ -241,20 +247,37 @@ module.exports.getAuthorByName = function (name, callback) {
     });
 }
 
-module.exports.deleteRating = function (id, callback) {
+module.exports.deleteRating = function (rating_id, user_id, callback) {
     client.query("\
     SELECT TRUE AS valid FROM books_ratings br \
     WHERE br.id = $1 AND br.user_id = $2 \
-    ", [id, 1], (err, res) => {
-        if (res == undefined) {
+    ", [rating_id, user_id], (err, res) => {
+        if (res) {
             callback(false);
         } else {
             client.query("\
             DELETE FROM books_ratings br \
-            WHERE br.id = $1", [id], (error, result) => {
+            WHERE br.id = $1", [rating_id], (error, result) => {
                 console.log(error);
                 callback(true);
             });
+        }
+    });
+}
+
+module.exports.getShelves = function (userId, callback) {
+    client.query("                                   \
+    SELECT *, \
+           (SELECT COUNT(*) \
+              FROM shelves_books sb \
+             WHERE sb.shelf_id = s.id) AS book_number\
+        FROM shelves s\
+        WHERE s.user_id = $1 AND public = TRUE;\
+    ", [userId], (err, res) => {
+        if (res) {
+            callback(res.rows);
+        } else {
+            callback(new Error("Not Found!"));
         }
     });
 }

@@ -1,45 +1,49 @@
 <!DOCTYPE html>
 html(lang="ru")
-    head
-        script(src="/post/authors.js")
-        link(href="/css/style_books.css" rel="stylesheet")
-        link(rel="preconnect" href="https://fonts.googleapis.com")
-        link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
-        link(href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet")
-        script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
-        title= "Авторы"
-    body
-        nav
-            h1= "Книжная библиотека"
-            ul    
-                li
-                    a(href="/books")= "Книги"
-                li 
-                    a(href="/authors")= "Авторы"
-                li 
-                    a(href="/shelves")= "Полки"
-                li 
-                    a(href="/users")= "Пользователи"
-                li 
-                    a(href="/profile")= "Профиль"
-        hr
-        h1.heading= "Авторы"
-    div.search
-            form(action="" method="POST" id="form")
-                input(type="text" name="search" placeholder="Поиск авторов")
-                input(type="submit" value="Поиск")
-    div.content
-        each val in values
-            div.book
-                div.book-header
-                    h2
-                        a(href="/authors/" + val.id)= val.name + " " + val.surname
-                    p
-                      i.fas.fa-book
-                      | 
-                      | 
-                      if val.book_number
-                        | #{val.book_number}
-                      else
-                        | N/A
-                h3= val.birth_year + " — " + val.death_year
+  head
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    script(src="/post/authors.js")
+    link(href="/css/style.css" rel="stylesheet")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
+    title= "Авторы"
+  body
+    nav
+      h1= "Книжная библиотека"
+      ul    
+        li
+          a(href="/books")= "Книги"
+        li 
+          a(href="/authors")= "Авторы"
+        li 
+          a(href="/shelves")= "Полки"
+        li 
+          a(href="/users")= "Пользователи"
+        li 
+          a(href="/profile")= "Профиль"
+    hr
+    div.main
+      header
+        div.heading
+          h1= "Авторы"
+        div.search
+          form(action="" method="POST" id="form")
+            input(type="text" name="search" placeholder="Поиск авторов")
+            input(type="submit" value="Поиск")
+      div.content
+        each val in authors
+          div.card
+            div.card-header
+              h2
+                a(href="/authors/" + val.id)= val.name + " " + val.surname
+              p
+                i.fas.fa-book
+                | 
+                | 
+                if val.book_number != null
+                  | #{val.book_number}
+                else
+                  | N/A
+            div.card-footer
+              h3= val.birth_year + " — " + val.death_year

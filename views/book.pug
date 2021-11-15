@@ -27,7 +27,8 @@ html
                       p= "Отзыв: " + val.review
                   else 
                       p= "Отзыв: отсутствует"
-                  if val.current_user     
-                    form(class="field" action="/rating_del/" + val.rating_id method="POST" id="form")
-                      a(href="/ratings/" + val.rating_id)= "Изменить"
-                      input(class="button" type="submit" value="Удалить")
+                  if val.current_user
+                    div.buttons
+                      form(class="field" action="/rating_del/" + val.rating_id method="POST" id="form")
+                        a(href="/ratings/" + val.rating_id)= "Изменить"
+                        input(class="button" type="submit" value="Удалить")

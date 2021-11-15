@@ -5,9 +5,9 @@ html(lang="ru")
     link(href="/css/style.css" rel="stylesheet")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
-    link(href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono&display=swap" rel="stylesheet")
     script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
-    title= "Книги"
+    link(href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono&display=swap" rel="stylesheet")
+    title= "Полки"
   body
     nav
       h1= "Книжная библиотека"
@@ -26,25 +26,21 @@ html(lang="ru")
     div.main
       header
         div.heading
-          h1= "Книги"
+          h1= "Полки"
+          a(href="/new_shelf")="Добавить полку"
         div.search
           form(action="" method="POST" id="form")
-            input(type="text" name="search" placeholder="Поиск книг")
+            input(type="text" name="search" placeholder="Поиск полок")
             input(type="submit" value="Поиск")
       div.content
-        each val in values
+        each val in shelves
           div.card
             div.card-header
               h2
-                a(href="/books/" + val.book_id)= val.book_name
+                a(href="/books/" + val.id)= val.name
               p 
-                i.far.fa-star
-                |
-                |
-                if val.rating != null
-                  | #{val.rating}
-                else 
-                  | N/A
-            div.card-footer
-              h3
-                a(href="/authors/" + val.author_id)= val.author_name + " " + val.author_surname
+                i.fas.fa-book
+                | 
+                | #{val.book_number}
+            div.card-footer        
+              h3= val.description
