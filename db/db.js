@@ -147,7 +147,6 @@ module.exports.getBookByID = function (id, callback) {
                 }
             });
         } else {
-            console.log(error);
             callback();
         }
     });
@@ -247,19 +246,26 @@ module.exports.getAuthorByName = function (name, callback) {
     });
 }
 
-module.exports.deleteRating = function (rating_id, user_id, callback) {
+module.exports.deleteRating = function (ratingId, userId, callback) {
+    console.log(ratingId, userId);
     client.query("\
-    SELECT TRUE AS valid FROM books_ratings br \
+    SELECT TRUE AS valid, book_id FROM books_ratings br \
     WHERE br.id = $1 AND br.user_id = $2 \
-    ", [rating_id, user_id], (err, res) => {
-        if (res) {
-            callback(false);
+    ", [ratingId, userId], (err, res) => {
+        let bookId = res.rows[0].book_id;
+        console.log(bookId);
+        if (err) {
+            callback(0, false);
         } else {
             client.query("\
             DELETE FROM books_ratings br \
-            WHERE br.id = $1", [rating_id], (error, result) => {
-                console.log(error);
-                callback(true);
+            WHERE br.id = $1", [ratingId], (error, result) => {
+                if (error) {
+                    callback(0, false);
+                } else {
+                    console.log(bookId);
+                    callback(bookId, true);
+                }
             });
         }
     });
@@ -274,7 +280,7 @@ module.exports.getShelves = function (userId, callback) {
         FROM shelves s\
         WHERE s.user_id = $1 AND public = TRUE;\
     ", [userId], (err, res) => {
-        if (res) {
+        if (err) {
             callback(res.rows);
         } else {
             callback(new Error("Not Found!"));

@@ -1,7 +1,5 @@
 html {
-    background-color: #fdfdfd;
-    color: #2f2f2f;
-    font-family: Open Sans;
+    font-family: Roboto Mono;
 }
 
 a {
@@ -19,7 +17,7 @@ a {
 }
 
 .rating {
-    border: 2px black solid;
+    border: solid black 1px;
     margin: 1em;
     padding: 30px;
     width: 25%;

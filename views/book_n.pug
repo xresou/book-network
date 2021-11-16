@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+html(lang="ru")
+  head
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(href="/css/book_n.css" rel="stylesheet")
+    link(rel="preconnect" href="https://fonts.googleapis.com")
+    link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
+    link(href="https://fonts.googleapis.com/css2?family=Noto+Sans+Mono&display=swap" rel="stylesheet")
+    script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
+    title= book.book_name
+  body
+    nav
+      h1= "Книжная библиотека"
+      ul    
+        li
+          a(href="/books")= "Книги"
+        li 
+          a(href="/authors")= "Авторы"
+        li 
+          a(href="/shelves")= "Полки"
+        li 
+          a(href="/users")= "Пользователи"
+        li 
+          a(href="/profile")= "Профиль"
+    hr
+    div.main
+      header
+        div.heading
+            h2= book.book_name
+            h3
+                b
+                    a(href="/authors/" + book.author_id)= book.author_name + " " + book.author_surname 
+            if book.rating == null
+                h3= "Рейтинг: отсутсвует"
+            else 
+                h3
+                    b= "Рейтинг:"
+                    |
+                    | #{book.rating}
+            if book.rating_number == null
+                h3= "Отзывы (0)"
+            else
+                h3
+                  b= "Отзывы (" + book.rating_number + "):"
+      div.content
+        each val in rating
+          div.card
+            div.card-header
+              h2
+                a(href="/users/" + val.id)= val.name + " " + val.surname + " @" + val.username + ""
+              p
+                b= "Оценка: " 
+                | #{val.rating}
+                if val.review != null  
+                    p
+                      b="Отзыв: "
+                      | #{val.review}
+                else 
+                    p
+                      b="Отзыв: " 
+                      | отсутствует
+            div.card-footer
+              if val.current_user
+                    div.buttons
+                      form(class="field" action="/rating_del/" + val.rating_id method="POST" id="form")
+                        a(href="/ratings/" + val.rating_id)= "Изменить"
+                        input(class="button" type="submit" value="Удалить")

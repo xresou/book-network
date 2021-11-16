@@ -14,20 +14,18 @@ body {
 }
 
 h1, a {
-    font-family: Open Sans;
+    font-family: Roboto Mono;
 }
 
 a {
-    color: white;
+    color: black;
     font-size: 1.25em;
-    padding: 1em;
+    padding: 0.75em;
     text-decoration: none;
 }
 
 .card {
-    background-color: rgb(66, 111, 245);
     border-radius: 10px;
-    color: white;
     padding: 4em;
     text-align: center;
     width: 30%;

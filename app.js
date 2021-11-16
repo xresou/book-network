@@ -30,17 +30,32 @@ app.post("/login", (req, res) => {
         db.addCookie(cookie, user[0].id, (err) => {
           console.log(err);
           if (err) {
-            res.send("Error!");
+            res.render("message", {
+              title: "Серверная ошибка",
+              message: "Произошла серверная ошибка!",
+              link: "/",
+              linkMessage: "Вернуться на главную страницу"
+            });
           } else {
             res.cookie("Auth", cookie);
             res.redirect(301, "/books");
           }
         });
       } else {
-        res.send("Password is not correct");
+        res.render("message", {
+          title: "Ошибка входа",
+          message: "Введены неверные данные",
+          link: "/login",
+          linkMessage: "Вернуться на страницу входа"
+        });
       }
     } else {
-      res.send("User is not found");
+      res.render("message", {
+        title: "Пользователь не зарегестирован",
+        message: "Пользователь не зарегестирован",
+        link: "/registration",
+        linkMessage: "Перейти на страницу регистрации"
+      });
     }
   });
 });
@@ -91,16 +106,27 @@ app.get("/registration", (req, res) => {
 app.post("/registration", (req, res) => {
   db.addUser(req.body, (error) => {
      if (error == null) {
-       res.send("Your account was created");
+      res.render("message", {
+        title: "Регистрация завершена",
+        message: "Пользователь зарегестирован",
+        link: "/login",
+        linkMessage: "Перейти на страницу авторизации"
+      });
      } else {
-       res.send("Error. Try again");
+      res.render("message", {
+        title: "Пользователь не зарегестирован",
+        message: "Произошла ошибка! Пользователь не зарегестирован",
+        link: "/registration",
+        linkMessage: "Перейти на страницу регистрации"
+      });
      }
   });
 });
 
 app.get("/books/:id", (req, res) => {
   db.getBookByID(req.params.id, (book) => {
-    res.render("book", {
+    console.log(book.ratings);
+    res.render("book_n", {
       book: book.info,
       rating: book.ratings
     });
@@ -154,14 +180,29 @@ app.post("/authors", (req, res) => {
 
 app.post("/rating_del/:id", (req, res) => {
   db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
-    db.deleteRating(req.params.id, user_id, (result) => {
-      res.send(result ? "Отзыв удален" : "Отзыв не был удален");
-      if (result) {
-        res.render();
-      } else {
-        res.render();
+    console.log(err);
+    if (err == null) {
+      db.deleteRating(req.params.id, user_id, (bookId, result) => {
+        console.log(bookId);
+        if (result) {
+          res.render("message", {
+            title: "Удаление отзыва",
+            message: "Отзыв был удалён",
+            link: "/books/" + bookId,
+            linkMessage: "Перейти на страницу книги"
+          });
+        } else {
+          res.render("message", {
+            title: "Ошибка удаления",
+            message: "Отзыв не был удалён",
+            link: "/books/" + bookId,
+            linkMessage: "Перейти на страницу книги"
+          });
       }
-    });
+      });
+    } else {  
+      res.sendFile("./html/error.html", { root: "./" });
+    }
   });
 });
 

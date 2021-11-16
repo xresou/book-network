@@ -1,0 +1,108 @@
+html {
+    font-family: Noto Sans Mono;
+    padding: 0;
+    margin: 0;
+}
+
+nav {
+    align-items: center;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+    width: 100%;
+}
+
+nav h1 {
+    margin-left: 0.8em;
+}
+
+.bold {
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 1.75em;
+    padding: 0;
+}
+
+ul {
+    display: flex;
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    font-size: 1.25em;
+    margin: 0 0.5em;
+    text-transform: uppercase;
+}
+
+li:hover {
+    text-decoration: underline 1px #000;
+}
+
+a {
+    color: rgb(5, 5, 5);
+    text-decoration: none;
+}
+
+header {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    margin: 0 1.5em;
+}
+
+.heading h3 {
+    font-weight: 400;
+}
+
+.content {
+    align-items: stretch;
+    display: flex;
+    flex-wrap: wrap;
+    margin: 1.5em;
+    justify-content: space-between;
+}
+
+.card {
+    border: 1px black solid;
+    color: black;
+    font-weight: 400;
+    max-height: 20%;
+    margin-bottom: 1em;
+    padding: 1em;
+    width: 30%;
+}
+
+.card-header p {
+    color: #000;
+}
+
+.card p {
+    font-size: 1.1em;
+    font-weight: 400;
+}
+
+.card h3 {
+    font-weight: 400;
+    margin-top: 0;
+}
+
+.buttons a {
+    font-weight: 600;
+}
+
+input {
+    background-color: white;
+    border: none;
+    font-family: Roboto Mono;
+    font-size: 1em;
+    font-weight: 600;
+}
+
+input:hover {
+    cursor: pointer;
+}

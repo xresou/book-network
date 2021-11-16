@@ -16,11 +16,11 @@ body {
 }
 
 h1, a {
-    font-family: Open Sans;
+    font-family: Roboto Mono;
 }
 
 a {
-    color: white;
+    color: black;
     font-size: 1.25em;
     text-decoration: none;
 }
@@ -30,12 +30,20 @@ a {
 }
 
 .card {
-    background-color: rgb(66, 111, 245);
-    border-radius: 10px;
-    color: white;
-    padding: 4em;
-    text-align: center;
+    border: solid 1px black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
     width: 30%;
+    padding: 1em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 a:hover {
@@ -43,12 +51,15 @@ a:hover {
 }
 
 input {
-    font-family: Open Sans;
-    
+    font-family: Roboto Mono;
+    margin: 0.5em;
 }
 
 input[type="text"] {
-    height: 1.75em;
+    border: none;
+    border-bottom: 1px solid black;
+    font-size: 1.1em;
+    height: 1.25em;
 }
 
 input[type="text"]:focus {
@@ -59,10 +70,9 @@ input[type="text"]::placeholder {
     font-size: 1em;
 }
 
-
-
 input[type="submit"] {
-    background-color: #ffffff;
-    border: none;
+    background-color: white;
+    border: solid black 1px;
+    font-size: 1.25em;
     height: 2em;
 }
