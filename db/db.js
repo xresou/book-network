@@ -303,7 +303,7 @@ module.exports.getShelves = function (userId, callback) {
               FROM shelves_books sb \
              WHERE sb.shelf_id = s.id) AS book_number\
         FROM shelves s\
-        WHERE s.user_id = $1 AND public = TRUE;\
+        WHERE s.user_id = $1;\
     ", [userId], (err, res) => {
         if (err == null) {
             console.log(res.rows);
