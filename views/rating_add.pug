@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang='ru'>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/rating_edit.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+        <title>Добавление отзыва</title>
+    </head>
+    <body>
+        <div class="main">
+            <div class="card">
+                <h1>Добавление отзыва</h1>
+                form(action="/rating_add/" + book_id  method="POST" id="form")
+                    label(for="rating")="Выберите оценку: "
+                    select(name="rating")
+                        option="1"
+                        option="2"
+                        option="3"
+                        option="4"
+                        option="5"
+                    <label for="review">Ваш отзыв: </label>
+                    <textarea name="review" rows="15" cols="50">
+                    </textarea>
+                    <input type="submit" value="Добавить">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

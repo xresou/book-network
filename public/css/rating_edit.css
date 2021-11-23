@@ -1,0 +1,78 @@
+html, body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+}
+
+.main {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+h1, a {
+    font-family: Roboto Mono;
+}
+
+a {
+    color: black;
+    font-size: 1.25em;
+    text-decoration: none;
+}
+
+.link {
+    margin-top: 2em;
+}
+
+.card {
+    border: solid 1px black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    width: 40%;
+    padding: 1em;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label, select {
+    font-size: 1.1em;
+    font-family: Roboto Mono;
+}
+
+textarea {
+    font-family: Roboto Mono;
+    font-size: 1em;
+}
+
+form label {
+    margin: 1em 0;
+}
+
+a:hover {
+    text-decoration: underline 2px white;
+}
+
+input {
+    font-family: Roboto Mono;
+    margin-top: 1em;
+}
+
+
+input[type="submit"] {
+    background-color: white;
+    border: solid black 1px;
+    font-size: 1.25em;
+    height: 2em;
+    width: 100%;
+}

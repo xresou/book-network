@@ -1,11 +1,13 @@
-html
+<!DOCTYPE html>
+html(lang="ru")
   head
-    link(rel="stylesheet" type="text/css" href="/css/style.css")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    link(href="/css/style.css" rel="stylesheet")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet")
     script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
-    title= author.name + " " + author.surname
+    title= "Пользователи"
   body
     nav
       h1= "Книжная библиотека"
@@ -24,22 +26,16 @@ html
     div.main
       header
         div.heading
-          h2= author.name + " " + author.surname
-        p 
-          b
-            | Годы жизни: 
-          | #{author.birth_year}  —  #{author.death_year}
+          h1= "Пользователи"
+        div.search
+          form(action="" method="POST" id="form")
+            input(type="text" name="search" placeholder="Поиск пользователей")
+            input(type="submit" value="Поиск")
       div.content
-        each val in books
+        each val in users
           div.card
             div.card-header
               h2
-                a(href="/books/" + val.id)= val.name
-              p
-                i.far.fa-star
-                | 
-                | 
-                if val.rating_number != null
-                  | #{val.rating}
-                else
-                  | N/A
+                a(href="/users/" + val.id)= val.name + " " + val.surname 
+            div.card-footer
+              h3= "@" + val.username

@@ -147,11 +147,17 @@ header p {
 }
 
 .buttons input {
-    background-color: white;
+    background-color: transparent;
     border: none;
     font-family: Roboto Mono;
     font-size: 1em;
     font-weight: 600;
+    margin: 0;
+    padding: 0;
+}
+
+.buttons input:hover {
+   cursor: pointer;
 }
 
 

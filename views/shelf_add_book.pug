@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang='ru'>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/rating_edit.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+        <title>Добавление книги</title>
+    </head>
+    <body>
+        <div class="main">
+            <div class="card">
+                <h1>Добавление книги на полку</h1>
+                form(action="/shelf_add/" + bookId  method="POST" id="form")
+                    label(for="shelf")="Выберите полку: "
+                    select(name="shelf")
+                        each val in shelves
+                            option= val.name
+                    <input type="submit" value="Добавить">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

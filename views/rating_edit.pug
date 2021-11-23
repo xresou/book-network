@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang='ru'>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/rating_edit.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+        <title>Изменение отзыва</title>
+    </head>
+    <body>
+        <div class="main">
+            <div class="card">
+                <h1>Изменение отзыва</h1>
+                <form action="" method="POST" id="form">
+                    <label for="rating">Выберите оценку: </label>
+                    <select name="rating">
+                        <option>1</option>
+                        <option>2</option>
+                        <option>3</option>
+                        <option>4</option>
+                        <option>5</option>
+                    </select>
+                    <label for="review">Ваш отзыв: </label>
+                    <textarea name="review" rows="15" cols="50">
+                    </textarea>
+                    <input type="submit" value="Изменить">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

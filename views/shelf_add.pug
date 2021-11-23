@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang='ru'>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/add_shelf.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet">
+        <title>Изменение отзыва</title>
+    </head>
+    <body>
+        <div class="main">
+            <div class="card">
+                <h1>Создание полки</h1>
+                form(action="/shelf_add/" method="POST" id="form")
+                    label(for="rating")="Название полки:"
+                    input(type="text" placeholder="Название" name="shelf")
+                    label="Тип полки: "
+                    div.radio-btn
+                        div.radio-btn.public
+                            input(type="radio" name="type" value="public" checked)
+                            label(for="public")="Открытая"
+                        div.radio-btn.private
+                            input(type="radio" name="type" value="private")
+                            label(for="private")="Закрытая"
+                    <label for="review">Дополнительное описание: </label>
+                    <textarea name="review" rows="15" cols="50">
+                    </textarea>
+                    <input type="submit" value="Создать">
+                </form>
+            </div>
+        </div>
+    </body>
+</html>

@@ -1,8 +1,85 @@
+html {
+    font-family: Roboto Mono, Helvetica;
+    height: 90%;
+}
+
+body {
+    height: 100%;
+}
+
+nav {
+    align-items: center;
+    color: #000;
+    display: flex;
+    justify-content: space-between;
+    margin-top: 1em;
+    width: 100%;
+}
+
+nav h1 {
+    margin-left: 0.8em;
+}
+
+.bold {
+    font-weight: 600;
+}
+
+h1 {
+    font-size: 1.75em;
+    padding: 0;
+}
+
+ul {
+    display: flex;
+    margin: 0;
+    list-style: none;
+    padding: 0;
+}
+
+li {
+    font-size: 1.25em;
+    margin: 0 0.5em;
+    text-transform: uppercase;
+}
+
+li:hover {
+    text-decoration: underline 1px #000;
+}
+
+a {
+    color: rgb(5, 5, 5);
+    text-decoration: none;
+}
+
+.content {
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-start;
+    height: 90%;
+}
+
 .card {
-    border: black solid 2px;
-    font-family: Open Sans;
-    margin: 15% auto;
-    text-align: center;
-    vertical-align: center;
-    width: 30%;
+    font-family: Roboto Mono;
+    height: 40%;
+    padding: 1em 2em;
+    width: 20%;
+}
+
+.shelves-block {
+    margin-top: 1em;
+    width: 90%;
+}
+
+.shelves {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: stretch;
+}
+
+.shelf {
+    border: solid black 1px;
+    padding: 1em;
+    width: 28%;
 }

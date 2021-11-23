@@ -4,11 +4,37 @@ html(lang='ru')
     link(rel="stylesheet" type="text/css" href="/css/user.css")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
-    link(href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet")
-    title= "Книги"
+    link(href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet")
+    title= info.name + " " + info.surname
   body
-    div.card
-        h1= user.name + " " + user.surname
-        h2= "@" + user.username
-        h3= "Создано полок: " + user.shelves_number
-        h3= "Добавлено отзывов: " + user.ratings_number
+    nav
+      h1= "Книжная библиотека"
+      ul
+        li
+          a(href="/books")= "Книги"
+        li 
+          a(href="/authors")= "Авторы"
+        li 
+          a(href="/shelves")= "Полки"
+        li 
+          a(href="/users")= "Пользователи"
+        li 
+          a(href="/profile")= "Профиль"
+    hr
+    div.content
+      div.card
+        h1= info.name + " " + info.surname
+        h2= "@" + info.username
+        h3= "Создано полок: " + info.shelves_number
+        h3= "Добавлено отзывов: " + info.ratings_number
+      if (info.shelves_number != 0)
+        div.shelves-block
+          div.shelves-heading
+            h2= "Полки пользователя: "
+          div.shelves
+            each shelf in shelves
+              div.shelf
+                h2
+                  a(href="/shelves/" + shelf.id)= shelf.name
+                h3= shelf.description
+              

@@ -2,12 +2,12 @@
 html(lang="ru")
   head
     meta(name="viewport" content="width=device-width, initial-scale=1")
-    link(href="/css/style.css" rel="stylesheet")
+    link(href="/css/shelf.css" rel="stylesheet")
     link(rel="preconnect" href="https://fonts.googleapis.com")
     link(rel="preconnect" href="https://fonts.gstatic.com" crossorigin)
     link(href="https://fonts.googleapis.com/css2?family=Roboto+Mono&display=swap" rel="stylesheet")
     script(src="https://kit.fontawesome.com/c837cd83e3.js" crossorigin="anonymous")
-    title= "Полки"
+    title= "Книги"
   body
     nav
       h1= "Книжная библиотека"
@@ -24,23 +24,20 @@ html(lang="ru")
           a(href="/profile")= "Профиль"
     hr
     div.main
-      header
-        div.heading
-          h1= "Полки"
-          a(href="/shelf_add")="Добавить полку"
-        div.search
-          form(action="" method="POST" id="form")
-            input(type="text" name="search" placeholder="Поиск полок")
-            input(type="submit" value="Поиск")
+      header 
+          h2= books[0].shelf_name 
+          h3= books[0].description
       div.content
-        each val in shelves
-          div.card
-            div.card-header
-              h2
-                a(href="/shelves/" + val.id)= val.name
-              p 
-                i.fas.fa-book
-                | 
-                | #{val.book_number}
-            div.card-footer        
-              h3= val.description
+        if books[0].book_id != null
+            each val in books
+              div.card
+                div.card-header
+                  h2  
+                    a(href="/books/" + val.book_id)= val.book_name
+                div.card-footer
+                  h3
+                    a(href="/authors/" + val.author_id)= val.author_name + " " + val.author_surname
+                  if (val.current_user) 
+                    div.buttons
+                      form(class="field" action="/book_shelf_del/" + val.book_shelf_id method="POST" id="form")
+                        input(class="button" type="submit" value="Удалить")
