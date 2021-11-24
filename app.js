@@ -213,7 +213,7 @@ app.post("/book_shelf_del/:id", (req, res) => {
             res.render("message", {
               title: "Удаление книги с полки",
               message: "Книга была удалена с полки",
-              link: "/shelves/" + result,
+              link: "/shelves/" + shelfId,
               linkMessage: "Вернуться на страницу полки"
             });
           } else {
