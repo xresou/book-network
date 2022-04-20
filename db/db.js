@@ -1,10 +1,10 @@
 const { Client } = require("pg");
 const client = new Client({
-    user: "auimxcthzusdcl",
-    password: "a15bbfba34d5f9eb238c775ee527c83442c6fb99ef20036e030253bb80ec32ce",
-    host: "ec2-52-208-221-89.eu-west-1.compute.amazonaws.com",
+    user: "jqalbyropweorm",
+    password: "a2d2ad35a081e1224f1d5c7f654a38b958145ddcce4f164a3e2061d8a274e0c9",
+    host: "ec2-52-49-68-244.eu-west-1.compute.amazonaws.com",
     port: "5432",
-    database: "df7cfkmb5tsbgf",
+    database: "deautb863r6fah",
     ssl: { rejectUnauthorized: false }
 });
 client.connect(); 
