@@ -1,5 +1,5 @@
 html {
-    font-family: Open Sans, Arial;
+    font-family: 'IBM Plex Sans', sans-serif;
     padding: 0;
     margin: 0;
 }
@@ -67,7 +67,7 @@ a {
     background-color: white;
     border: 2px solid black;
     border-radius: 15px;
-    font-family: Open Sans;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1.15em;
     font-weight: 600;
     margin-left: 10px;

@@ -1,5 +1,5 @@
 html {
-    font-family: Roboto Mono, Helvetica;
+    font-family: 'IBM Plex Sans', sans-serif;
     height: 90%;
 }
 
@@ -59,7 +59,7 @@ a {
 }
 
 .card {
-    font-family: Roboto Mono;
+    font-family: 'IBM Plex Sans', sans-serif;
     height: 40%;
     padding: 1em 2em;
     width: 20%;

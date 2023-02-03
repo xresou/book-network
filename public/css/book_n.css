@@ -1,5 +1,5 @@
 html {
-    font-family: Roboto Mono, Helvetica, sans-serif;
+    font-family: 'IBM Plex Sans', sans-serif;
     padding: 0;
     margin: 0;
 }
@@ -99,7 +99,7 @@ header {
 input {
     background-color: white;
     border: none;
-    font-family: Roboto Mono;
+    font-family: 'IBM Plex Sans', sans-serif;
     font-size: 1em;
     font-weight: 600;
 }

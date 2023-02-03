@@ -14,7 +14,7 @@ body {
 }
 
 h1, a {
-    font-family: Roboto Mono;
+    font-family: 'IBM Plex Sans', sans-serif;
 }
 
 a {
@@ -32,5 +32,5 @@ a {
 }
 
 a:hover {
-    text-decoration: underline 2px white;
+    text-decoration: underline 2px black;
 }
