@@ -281,7 +281,7 @@ module.exports.getBookByName = function(name, callback) {
                LIKE LOWER('%' || $1 || '%')                 
         `, [name], (err, res) => {
             if (err == null) {
-                callback(res.rows);
+                callback(null, res.rows);
             } else {
                 callback(err);
             }
