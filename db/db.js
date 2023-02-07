@@ -524,3 +524,19 @@ module.exports.deleteBookShelf = function(userId, bookShelfId, callback) {
         }
     );   
 }
+
+module.exports.getShelfByName = function(userId, shelfName, callback) {
+    client.query(`
+        SELECT * 
+          FROM books.shelves
+         WHERE user_id = $1
+           AND LOWER(name) LIKE LOWER('%' || $2 || '%')
+            OR LOWER(description) LIKE LOWER('%' || $2 || '%')
+        `, [userId, shelfName], (err, res) => {
+            if (err == null) {
+                callback(null, res.rows);
+            } else {
+                callback(err);
+            }
+    })
+}

@@ -172,7 +172,7 @@ app.get('/authors/:id', (req, res) => {
 
 app.get('/shelves/', (req, res) => {
 	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
-		if (userId) {
+		if (err == null) {
 			db.getShelves(userId, (error, result) => {
 				if (error == null) {
 					res.render('shelves', {
@@ -291,7 +291,7 @@ app.post('/users', (req, res) => {
 
 app.post('/rating_del/:id', (req, res) => {
 	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
-		if (error == null) {
+		if (err == null) {
 			db.deleteRating(req.params.id, userId, (bookId, result) => {
 				if (result) {
 					res.render('message', {
@@ -383,6 +383,24 @@ app.post('/rating_add/:id', (req, res) => {
 						});
 					}
 				});
+		} else {
+			sendServerError(res, err.message);
+		}
+	});
+});
+
+app.post('/shelves', (req, res) => {
+	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
+		if (err == null) {
+			db.getShelfByName(userId, req.body.search, (error, result) => {
+				if (error == null) {
+					res.render('shelves', {
+						shelves: result
+					});
+				} else {
+					sendServerError(res, error.message);
+				}
+			});
 		} else {
 			sendServerError(res, err.message);
 		}
