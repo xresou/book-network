@@ -17,14 +17,14 @@ module.exports.getUserIdByCookie = function(cookie, callback) {
           FROM books.cookies 
          WHERE cookie = $1
         `, [cookie], (err, res) => {
-            if (err) {
-                callback(err);
-            } else {
+            if (err == null) {
                 if (res.rows.length > 0) {
                     callback(null, res.rows[0].user_id);
                 } else {
-                    callback(new Error('Cookie is not found!'));
+                    callback(err);
                 }
+            } else {
+                callback(err);                
             }
         }
     );
@@ -33,7 +33,7 @@ module.exports.getUserIdByCookie = function(cookie, callback) {
 module.exports.getAuthors = function(callback) {
     client.query(`
         SELECT a.id, a.surname, a.name, a.birth_year, a.death_year, 
-               COUNT(ba.book_id) AS book_number 
+               COUNT(ba.book_id) AS book_number
           FROM books.authors a 
           JOIN books.books_authors ba ON a.id = ba.author_id
          GROUP BY a.id, a.surname, a.name, a.birth_year, a.death_year
@@ -54,7 +54,11 @@ module.exports.getUser = function(login, callback) {
           FROM books.users 
          WHERE username = $1
         `, [login], (err, res) => {
-            callback(res.rows);
+            if (err == null) {
+                callback(res.rows);
+            } else {
+                callback(false);
+            }
         }
     );
 }
@@ -63,21 +67,21 @@ module.exports.addCookie = function(cookie, user_id, callback) {
     client.query(`
         DELETE FROM books.cookies 
          WHERE user_id = $1 
-        `, [user_id], (err, res) => {
-            if (err) {
-                callback(err); 
-            } else {
+        `, [user_id], (err) => {
+            if (err == null) {
                 client.query(`
                     INSERT INTO books.cookies (id, user_id, cookie) 
                          VALUES (DEFAULT, $1, $2)
                     `, [user_id, cookie], (error, result) => {
-                        if (error) {
-                            callback(error);
-                        } else {
+                        if (error == null) {
                             callback(null);
+                        } else {
+                            callback(error);
                         }
                     }
                 );
+            } else {
+                callback(err);
             }
         }
     );
@@ -119,13 +123,13 @@ module.exports.getPublishings = function(callback) {
 module.exports.getProfile = function(user_id, callback) {
     client.query(`
         SELECT * 
-          FROM books.users 
+          FROM books.users
          WHERE id = $1
         `, [user_id], (err, res) => {
             if (err == null) {
                 callback(null, res.rows[0]);
             } else {
-                throw err;
+                callback(err);
             }
         }
     );
@@ -138,8 +142,10 @@ module.exports.addUser = function(user, callback) {
         `, [user.login, user.password, 
             user.surname, user.name, 
             user.email], 
-        (err, res) => {
-            callback(err);
+        (err) => {
+            if (err != null) {
+                callback(err);
+            }
         }
     );
 }
@@ -178,7 +184,7 @@ module.exports.getBookByID = function(bookId, userId, callback) {
                     }
                 );
             } else {
-                callback();
+                callback(err);
             }
         }
     );
@@ -277,7 +283,7 @@ module.exports.getBookByName = function(name, callback) {
             if (err == null) {
                 callback(res.rows);
             } else {
-                callback();
+                callback(err);
             }
         }
     );
@@ -297,7 +303,7 @@ module.exports.getAuthorByName = function(name, callback) {
             if (err == null) {
                 callback(res.rows);
             } else {
-                callback();
+                callback(err);
             }
         }
     );
@@ -311,17 +317,17 @@ module.exports.deleteRating = function(ratingId, userId, callback) {
            AND br.user_id = $2 
         `, [ratingId, userId], (err, res) => {
             let bookId = res.rows[0].book_id;
-            if (err) {
+            if (err != null) {
                 callback(0, false);
             } else {
                 client.query(`
                     DELETE FROM books.books_ratings br 
-                    WHERE br.id = $1
+                     WHERE br.id = $1
                     `, [ratingId], (error, result) => {
-                        if (error) {
-                            callback(0, false);
-                        } else {
+                        if (error == null) {
                             callback(bookId, true);
+                        } else {
+                            callback(bookId, false);
                         }
                     }
                 );
@@ -340,10 +346,9 @@ module.exports.getShelves = function(userId, callback) {
          WHERE s.user_id = $1; 
         `, [userId], (err, res) => {
             if (err == null) {
-                console.log(res.rows);
                 callback(null, res.rows);
             } else {
-                callback(new Error('Not Found!'));
+                callback(err);
             }
         }
     );
@@ -362,7 +367,6 @@ module.exports.editRating = function(ratingId, rating, review, callback) {
                  WHERE id = $1
                 `, [ratingId], (error, result) => {
                     if (!err) {
-                        console.log(result);
                         callback(result.rows[0].book_id, true);
                     } else {
                         if (error == null) {
@@ -382,12 +386,10 @@ module.exports.addRating = function(bookId, userId, rating, review, callback) {
         INSERT INTO books.books_ratings (id, book_id, user_id, rating, review)
              VALUES (DEFAULT, $1, $2, $3, $4) 
         `, [bookId, userId, rating, review], (err, res) => {
-            console.log(err, res);
-            if (!err) {
+            if (err == null) {
                 callback(true);
             } else {
-                console.log(err);
-                callback(false);
+                callback(err);
             }
         }
     );
@@ -397,11 +399,11 @@ module.exports.addShelf = function(userId, shelfName, shelfDesc, shelfType, call
     client.query(`
         INSERT INTO books.shelves (id, user_id, name, public, description) 
              VALUES (DEFAULT, $1, $2, $3, $4) 
-        `, [userId, shelfName, shelfType, shelfDesc], (err, res) => {
-            if (!err) {
+        `, [userId, shelfName, shelfType, shelfDesc], (err) => {
+            if (err == null) {
                 callback(true);
             } else {
-                callback(false);
+                callback(err);
             }
         }
     );
@@ -428,7 +430,7 @@ module.exports.getShelf = function(userId, shelfId, callback) {
             if (err == null) {
                 callback(null, res.rows);
             } else {
-                callback(new Error(''));
+                callback(err);
             }
         }
     );
@@ -439,11 +441,11 @@ module.exports.addBookToShelf = function(userId, bookId, shelfName, callback) {
         INSERT INTO books.shelves_books (shelf_id, book_id) 
              SELECT id, $2 AS book_id FROM books.shelves s 
               WHERE user_id = $1 AND name = $3 
-                AND NOT exists (SELECT * 
+                AND NOT EXISTS (SELECT * 
                                   FROM books.shelves_books sb 
                                  WHERE sb.book_id = $2 
                                    AND sb.shelf_id = s.id) 
-        `, [userId, bookId, shelfName], (err, res) => {
+        `, [userId, bookId, shelfName], (err) => {
             if (err == null) {
                 callback(null, true);
             } else {
@@ -502,7 +504,7 @@ module.exports.deleteBookShelf = function(userId, bookShelfId, callback) {
                         client.query(`
                             DELETE FROM books.shelves_books 
                              WHERE id = $1 
-                            `, [bookShelfId], (error, result) => {
+                            `, [bookShelfId], (error) => {
                                 if (error == null) {
                                     callback(null, shelfId, true);
                                 } else {

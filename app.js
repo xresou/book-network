@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const PORT = process.env.PORT || 5000;
 const app = express();
 const db = require('./db/db');
+const e = require('express');
 
 app.use(bodyParser.json());
 app.use(express.urlencoded({
@@ -17,6 +18,16 @@ app.use(cookieParser());
 app.use(express.static(__dirname + '/public'));
 
 app.set('view engine', 'pug');
+
+function sendServerError(res, errorDescription) {
+	res.render('message', {
+		title: 'Серверная ошибка',
+		message: 'Произошла серверная ошибка!',
+		description: errorDescription,
+		link: '/',
+		linkMessage: 'Вернуться на главную страницу'
+	});
+}
 
 app.get('/', (req, res) => {
 	res.sendFile('./html/main.html', {
@@ -36,17 +47,11 @@ app.post('/login', (req, res) => {
 			if (user[0].password == req.body.password) {
 				let cookie = uuidv4();
 				db.addCookie(cookie, user[0].id, (err) => {
-					console.log(err);
-					if (err) {
-						res.render('message', {
-							title: 'Серверная ошибка',
-							message: 'Произошла серверная ошибка!',
-							link: '/',
-							linkMessage: 'Вернуться на главную страницу'
-						});
-					} else {
+					if (err == null) {
 						res.cookie('Auth', cookie);
 						res.redirect(301, '/books');
+					} else {
+						sendServerError(res, err.message);
 					}
 				});
 			} else {
@@ -93,19 +98,19 @@ app.get('/publishings', (req, res) => {
 });
 
 app.get('/profile', (req, res) => {
-	db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
-		if (err) {
-			console.log(err);
-			res.send('Error: ' + err.message);
-		} else {
-			db.getProfile(user_id, (error, result) => {
+	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
+		if (err == null) {
+			db.getProfile(userId, (error, result) => {
 				if (error == null) {
-					console.log(result);
 					res.render('profile', {
 						user: result
 					});
+				} else {
+					sendServerError(res, error.message);
 				}
 			});
+		} else {
+			sendServerError(res, err.message);
 		}
 	});
 });
@@ -117,8 +122,8 @@ app.get('/registration', (req, res) => {
 });
 
 app.post('/registration', (req, res) => {
-	db.addUser(req.body, (error) => {
-		if (error == null) {
+	db.addUser(req.body, (err) => {
+		if (err == null) {
 			res.render('message', {
 				title: 'Регистрация завершена',
 				message: 'Пользователь зарегистирован',
@@ -137,38 +142,30 @@ app.post('/registration', (req, res) => {
 });
 
 app.get('/books/:id', (req, res) => {
-	db.getUserIdByCookie(req.cookies.Auth, (error, userId) => {
-		if (error == null) {
+	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
+		if (err == null) {
 			db.getBookByID(req.params.id, userId, (book) => {
-				console.log(book);
-				res.render('book_n', {
+				res.render('book', {
 					book: book.info,
 					ratings: book.ratings,
 					book_id: req.params.id
 				});
 			});
 		} else {
-			console.log(error);
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.get('/authors/:id', (req, res) => {
-	db.getAuthorByID(req.params.id, (error, result) => {
-		console.log(JSON.stringify(result));
-		if (error == null) {
+	db.getAuthorByID(req.params.id, (err, result) => {
+		if (err == null) {
 			res.render('author', {
 				author: result.info,
 				books: result.books
 			});
 		} else {
-			res.send('Error!');
+			sendServerError(res, err.message);
 		}
 	});
 });
@@ -177,17 +174,16 @@ app.get('/shelves/', (req, res) => {
 	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
 		if (userId) {
 			db.getShelves(userId, (error, result) => {
-				console.log('!-----------------------------', result);
 				if (error == null) {
 					res.render('shelves', {
 						shelves: result
 					});
 				} else {
-					res.send('ERROR');
+					sendServerError(res, error.message);
 				}
 			});
 		} else {
-			res.send('Error!');
+			sendServerError(res, err.message);
 		}
 	});
 });
@@ -199,17 +195,14 @@ app.get('/shelves/:id', (req, res) => {
 			db.getShelf(userId, req.params.id, (error, result) => {
 				if (error == null) {
 					res.render('shelf', {
-						books: result
+						books: result,
 					});
+				} else {
+					sendServerError(res, error.message);
 				}
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
@@ -219,7 +212,6 @@ app.post('/book_shelf_del/:id', (req, res) => {
 		if (err == null) {
 			db.deleteBookShelf(userId, req.params.id, (error, shelfId, result) => {
 				if (error == null) {
-					console.log(result);
 					if (result.length != 0) {
 						res.render('message', {
 							title: 'Удаление книги с полки',
@@ -228,58 +220,40 @@ app.post('/book_shelf_del/:id', (req, res) => {
 							linkMessage: 'Вернуться на страницу полки'
 						});
 					} else {
-						res.render('message', {
-							title: 'Серверная ошибка',
-							message: 'Произошла серверная ошибка!',
-							link: '/',
-							linkMessage: 'Вернуться на главную страницу'
-						});
+						sendServerError(res, '');
 					}
 				} else {
-					res.render('message', {
-						title: 'Серверная ошибка',
-						message: 'Произошла серверная ошибка!',
-						link: '/',
-						linkMessage: 'Вернуться на главную страницу'
-					});
+					sendServerError(res, error.message);
 				}
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
-
-
 app.get('/users/:id', (req, res) => {
-	db.getUserByID(req.params.id, (error, result) => {
-		if (error == null) {
+	db.getUserByID(req.params.id, (err, result) => {
+		if (err == null) {
 			res.render('user', {
 				info: result.info,
 				shelves: result.shelves
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.post('/books', (req, res) => {
-	db.getBookByName(req.body.search, (result) => {
-		res.render('books', {
-			values: result
-		});
+	db.getBookByName(req.body.search, (err, result) => {
+		if (err == null) {
+			res.render('books', {
+				values: result
+			});
+		} else {
+			sendServerError(res, err.message);
+		}
 	});
 });
 
@@ -292,46 +266,33 @@ app.post('/authors', (req, res) => {
 });
 
 app.get('/users', (req, res) => {
-	db.getUsers((error, result) => {
-		if (error == null) {
+	db.getUsers((err, result) => {
+		if (err == null) {
 			res.render('users', {
 				users: result
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.post('/users', (req, res) => {
-	db.getUsersByName(req.body.search, (error, result) => {
-		console.log(result);
-		if (error == null) {
+	db.getUsersByName(req.body.search, (err, result) => {
+		if (err == null) {
 			res.render('users', {
 				users: result
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
-
 app.post('/rating_del/:id', (req, res) => {
-	db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
-		console.log(err);
-		if (err == null) {
-			db.deleteRating(req.params.id, user_id, (bookId, result) => {
+	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
+		if (error == null) {
+			db.deleteRating(req.params.id, userId, (bookId, result) => {
 				if (result) {
 					res.render('message', {
 						title: 'Удаление отзыва',
@@ -349,32 +310,20 @@ app.post('/rating_del/:id', (req, res) => {
 				}
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.get('/rating_edit/:id', (req, res) => {
-	db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
-		console.log(err);
+	db.getUserIdByCookie(req.cookies.Auth, (err) => {
 		if (err == null) {
 			res.render('rating_edit');
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
-
 
 app.post('/rating_edit/:id', (req, res) => {
 	db.editRating(req.params.id, req.body.rating, req.body.review, (bookId, result) => {
@@ -393,35 +342,24 @@ app.post('/rating_edit/:id', (req, res) => {
 				linkMessage: 'Перейти на страницу книги'
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, '');
 		}
 	});
 });
 
 app.get('/rating_add/:id', (req, res) => {
-	db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
+	db.getUserIdByCookie(req.cookies.Auth, (err) => {
 		if (err == null) {
 			res.render('rating_add', {
 				book_id: req.params.id
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.post('/rating_add/:id', (req, res) => {
-	console.log(req);
 	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
 		if (err == null) {
 			db.addRating(
@@ -446,37 +384,25 @@ app.post('/rating_add/:id', (req, res) => {
 					}
 				});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.get('/shelf_add', (req, res) => {
-	db.getUserIdByCookie(req.cookies.Auth, (err, user_id) => {
+	db.getUserIdByCookie(req.cookies.Auth, (err) => {
 		if (err == null) {
 			res.render('shelf_add');
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.post('/shelf_add', (req, res) => {
-	console.err(req);
 	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
 		if (err == null) {
 			let isPublic = req.body.type == 'public' ? true : false;
-			console.log(isPublic);
 			db.addShelf(userId, req.body.shelf, req.body.review, isPublic, (result) => {
 				if (result) {
 					res.render('message', {
@@ -495,52 +421,51 @@ app.post('/shelf_add', (req, res) => {
 				}
 			});
 		} else {
-			res.render('message', {
-				title: 'Серверная ошибка',
-				message: 'Произошла серверная ошибка!',
-				link: '/',
-				linkMessage: 'Вернуться на главную страницу'
-			});
+			sendServerError(res, err.message);
 		}
 	});
 });
 
 app.get('/shelf_add/:bookId', (req, res) => {
 	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
-		console.log(userId);
-		db.getShelves(userId, (error, result) => {
-			if (error == null) {
-				console.log('RESULT: ', result);
-				res.render('shelf_add_book', {
-					shelves: result,
-					bookId: req.params.bookId
-				});
-			}
-		});
+		if (err == null) {
+			db.getShelves(userId, (error, result) => {
+				if (error == null) {
+					res.render('shelf_add_book', {
+						shelves: result,
+						bookId: req.params.bookId
+					});
+				}
+			});
+		} else {
+			sendServerError(res, err.message);
+		}
 	});
 });
 
 app.post('/shelf_add/:bookId', (req, res) => {
 	db.getUserIdByCookie(req.cookies.Auth, (err, userId) => {
-		console.log(userId);
-		db.addBookToShelf(userId, req.params.bookId, req.body.shelf, (error, result) => {
-			if (error == null) {
-				console.log('RESULT: ', result);
-				res.render('message', {
-					title: 'Книга добавлена',
-					message: 'Книга была добавлена на полку',
-					link: '/books',
-					linkMessage: 'Вернуться на страницу книг'
-				});
-			} else {
-				res.render('message', {
-					title: 'Ошибка добавления',
-					message: 'Книга не была добавлена на полку',
-					link: '/books',
-					linkMessage: 'Вернуться на страницу книг'
-				});
-			}
-		});
+		if (err == null) {
+			db.addBookToShelf(userId, req.params.bookId, req.body.shelf, (error, result) => {
+				if (error == null) {
+					res.render('message', {
+						title: 'Книга добавлена',
+						message: 'Книга была добавлена на полку',
+						link: '/books',
+						linkMessage: 'Вернуться на страницу книг'
+					});
+				} else {
+					res.render('message', {
+						title: 'Ошибка добавления',
+						message: 'Книга не была добавлена на полку',
+						link: '/books',
+						linkMessage: 'Вернуться на страницу книг'
+					});
+				}
+			});
+		} else {
+			sendServerError(res, err.message);
+		}
 	});
 });
 

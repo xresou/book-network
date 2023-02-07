@@ -10,6 +10,9 @@
   body
     div.main
       div.card
-        h1=message
+        h1= message
+        if (description)
+          h4= 'Описание: ' + description
         h3
           a(href=link)=linkMessage
+        
