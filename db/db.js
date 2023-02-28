@@ -527,8 +527,11 @@ module.exports.deleteBookShelf = function(userId, bookShelfId, callback) {
 
 module.exports.getShelfByName = function(userId, shelfName, callback) {
     client.query(`
-        SELECT * 
-          FROM books.shelves
+        SELECT *,
+               (SELECT COUNT(*) 
+                  FROM books.shelves_books sb 
+                 WHERE sb.shelf_id = s.id) AS book_number 
+          FROM books.shelves s
          WHERE user_id = $1
            AND LOWER(name) LIKE LOWER('%' || $2 || '%')
             OR LOWER(description) LIKE LOWER('%' || $2 || '%')
